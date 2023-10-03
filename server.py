@@ -11,7 +11,14 @@ app.url_map.converters['re'] = MyConverter
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    ctx = {
+        "name": '老王',
+        "age": 12,
+        "hobby": ["下棋", '电影'],
+        "test": {"a": 1, "b": 2}
+    }
+    return render_template('index.html', **ctx)
+    # return render_template('index.html', name='laowang', age=12, hobby=["下棋", '电影'], test={"a": 1, "b": 2})  # 加载并渲染模板
 
 @app.route('/center/<re(r"\d{5,10}"):uid>')
 def center(uid):
