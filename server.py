@@ -1,6 +1,8 @@
 from flask import Flask, current_app
 # redirect
 from flask import redirect, url_for
+# template
+from flask import render_template
 # converter
 from converters import MyConverter
 
@@ -9,7 +11,7 @@ app.url_map.converters['re'] = MyConverter
 
 @app.route('/')
 def index():
-    return 'index'
+    return render_template('index.html')
 
 @app.route('/center/<re(r"\d{5,10}"):uid>')
 def center(uid):
