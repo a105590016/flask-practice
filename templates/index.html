@@ -7,9 +7,37 @@
 </head>
 <body>
     <h1>index template</h1>
-    名字: <span>{{ name }}</span> <br>
+    <!-- jinja 註解 {# #} -->
+    名字: <span>{# {{ name }} #}</span> <br>
     年龄: <span>{{ age }}</span> <br>
-    取列表第一个: <span>{{ hobby[0] }}</span><br>
     取字典a对应的值：<span>{{ test.a }}</span><br>
+    爱好:
+    <ul>
+        {% for h in hobby %}
+            {% if loop.index == 1 %}
+                <li style="background-color: red">{{ h }}</li>
+            {% else %}
+                <li style="background-color: chartreuse">{{ h }}</li>
+            {% endif %}
+        {% endfor %}
+    </ul>
+    长度过滤器： {{ name|length }}<br>
+    默认过滤器,当后台没有返回sex的时候会执行: {{ sex|default('男') }}<br>
+    反转过滤器: {{ name|reverse }}<br>
+    <!-- 過濾器執行反轉與變大寫 -->
+    {{ "hello world" | reverse | upper }}<br>
+    禁用转义：{{ '<em>hello</em>' | safe }}<br>
+    删除标签：{{ '<em>hello</em>' | striptags }}<br>
+    首字母大写：{{ 'hello' | capitalize }}<br>
+    所有值小写：{{ 'HELLO' | lower }}<br>
+    首字母大写：{{ 'hello world' | title }}<br>
+    字符串反转：{{ 'hello' | reverse }}<br>
+    字符串截断：{{ 'hello world' | truncate(5) }}<br>
+    获取列表长度:{{ [1,2,3,4,5,6] | length }}<br>
+    列表求和:{{ [1,2,3,4,5,6] | sum }}<br>
+    列表排序:{{ [6,2,3,1,5,4] | sort }}<br>
+    <!-- 自定義過濾器 -->
+    無參數:{{ time | handletime }}<br>
+    有參數:{{ time | handletime_with_param('%Y-%m-%d %H:%M:%S') }}<br>
 </body>
 </html>
