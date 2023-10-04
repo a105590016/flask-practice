@@ -1,1 +1,5 @@
 __pycache__/*
+uploads/images/*.jpg
+uploads/images/*.jpeg
+uploads/images/*.png
+uploads/images/*.gif
