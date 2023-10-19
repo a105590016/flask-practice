@@ -111,6 +111,18 @@ def delete_cookie():
     resp.delete_cookie('username')
     return resp
     
+    
+@app.route('/define_response')
+def define_response():
+    # (response, status_code, headers)
+    # return ('test 自定義 responese', 444, {"name": "evan", "value": 1234 })
+
+    # 可不加括號, 會自動轉成 set
+    # return 'test 自定義 responese', 444, {"name": "evan", "value": 1234 }
+
+    # 自定義 status code, 可加上描述訊息
+    return 'test 自定義 responese', '444 error1234', {"name": "evan", "value": 1234 }
+    
 
 if __name__ == '__main__':
     app.config.from_pyfile('./config/config.cfg')
