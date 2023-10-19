@@ -1,4 +1,4 @@
-from flask import Flask, current_app
+from flask import Flask, current_app, abort
 # request, response
 from flask import request, make_response, jsonify
 # redirect
@@ -23,6 +23,13 @@ f_session = Session()
 app = Flask('flask-practice')
 app.url_map.converters['re'] = MyConverter
 
+# 自定義 502 錯誤訊息
+@app.errorhandler(502)
+def handle_502_error(error):
+    print(error)
+    return 'server error'
+
+
 @app.route('/')
 def index():
     ctx = {
@@ -37,6 +44,10 @@ def index():
 
 @app.route('/center/<re(r"\d{5,10}"):uid>')
 def center_page(uid):
+    if uid == '123456':
+        # 提前中斷程式, 並回傳錯誤訊息
+        abort(502)
+        
     return f"user: {uid}"
 
 @app.route('/phone/<re(r"09\d{8}"):phone_number>')
