@@ -7,14 +7,18 @@ from flask import redirect, url_for
 from flask import render_template
 # session
 from flask import session
+from flask_session import Session
 # 從資料夾取得文件
 from flask import send_from_directory
 from werkzeug.utils import secure_filename
 # converter
 from converters import MyConverter
 
-import os
+import os, redis
 from datetime import datetime
+
+# 初始化 session
+f_session = Session()
 
 app = Flask('flask-practice')
 app.url_map.converters['re'] = MyConverter
@@ -160,6 +164,15 @@ def json_response():
         'value': 1234
     }
     return jsonify(data)
+
+
+@app.route('/doc')
+def doc():
+    return send_from_directory('doc', 'session.md')
+
+@app.route('/doc/<path:path>')
+def send_doc(path):
+    return send_from_directory('doc', path)
     
 
 if __name__ == '__main__':
@@ -168,4 +181,9 @@ if __name__ == '__main__':
     app.jinja_env.filters['handletime'] = handletime  # 注册过滤器
     app.jinja_env.filters['handletime_with_param'] = handletime_with_param  # 注册过滤器
     # print(app.url_map.converters)
+    
+    # 綁定 app
+    app.config['SESSION_REDIS'] = redis.Redis(host=app.config['SESSION_REDIS_HOST'], port=app.config['SESSION_REDIS_PORT'], db=app.config['SESSION_REDIS_DB'])
+    f_session.init_app(app)
+    
     app.run(host='0.0.0.0', port=5000)
