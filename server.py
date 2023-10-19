@@ -1,4 +1,4 @@
-from flask import Flask, current_app, request, make_response
+from flask import Flask, current_app, request, make_response, jsonify
 # redirect
 from flask import redirect, url_for
 # template
@@ -127,6 +127,15 @@ def define_response():
     resp.headers['name'] = 'evan'
     resp.status_code = '444 error12345'
     return resp
+
+
+@app.route('/json_response')
+def json_response():
+    data = {
+        'name': 'evan',
+        'value': 1234
+    }
+    return jsonify(data)
     
 
 if __name__ == '__main__':
