@@ -1,8 +1,12 @@
-from flask import Flask, current_app, request, make_response, jsonify
+from flask import Flask, current_app
+# request, response
+from flask import request, make_response, jsonify
 # redirect
 from flask import redirect, url_for
 # template
 from flask import render_template
+# session
+from flask import session
 # 從資料夾取得文件
 from flask import send_from_directory
 from werkzeug.utils import secure_filename
@@ -34,10 +38,22 @@ def center_page(uid):
 @app.route('/phone/<re(r"09\d{8}"):phone_number>')
 def phone(phone_number):
     return f"phone number: {phone_number}"
-
-@app.route('/login')
-def login():
     return redirect(url_for('center_page', uid='12311'))
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    session['uid'] = '123456'
+    # session['username'] = 'evan123456'
+    return redirect('/user')
+
+@app.route('/user')
+def user():
+    username = session.get('username')
+    
+    if username:
+        return f"user: {username}"
+    
+    return 'please login first'
 
 # 自定义过滤器
 def handletime(time):
@@ -139,6 +155,7 @@ def json_response():
     
 
 if __name__ == '__main__':
+    # 引入 settings
     app.config.from_pyfile('./config/config.cfg')
     app.jinja_env.filters['handletime'] = handletime  # 注册过滤器
     app.jinja_env.filters['handletime_with_param'] = handletime_with_param  # 注册过滤器
