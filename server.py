@@ -121,7 +121,12 @@ def define_response():
     # return 'test 自定義 responese', 444, {"name": "evan", "value": 1234 }
 
     # 自定義 status code, 可加上描述訊息
-    return 'test 自定義 responese', '444 error1234', {"name": "evan", "value": 1234 }
+    # return 'test 自定義 responese', '444 error1234', {"name": "evan", "value": 1234 }
+    
+    resp = make_response('123')
+    resp.headers['name'] = 'evan'
+    resp.status_code = '444 error12345'
+    return resp
     
 
 if __name__ == '__main__':
