@@ -8,6 +8,9 @@ from flask import render_template
 # session
 from flask import session
 from flask_session import Session
+# mysql
+from flask_sqlalchemy import SQLAlchemy
+import pymysql
 # 從資料夾取得文件
 from flask import send_from_directory
 from werkzeug.utils import secure_filename
@@ -19,6 +22,7 @@ from datetime import datetime
 
 # 初始化 session
 f_session = Session()
+f_mysql = SQLAlchemy()
 
 app = Flask('flask-practice')
 app.url_map.converters['re'] = MyConverter
@@ -194,7 +198,11 @@ if __name__ == '__main__':
     # print(app.url_map.converters)
     
     # 綁定 app
+    # session
     app.config['SESSION_REDIS'] = redis.Redis(host=app.config['SESSION_REDIS_HOST'], port=app.config['SESSION_REDIS_PORT'], db=app.config['SESSION_REDIS_DB'])
     f_session.init_app(app)
+    # mysql
+    pymysql.install_as_MySQLdb()
+    f_mysql.init_app(app)
     
     app.run(host='0.0.0.0', port=5000)
