@@ -43,7 +43,15 @@ def phone(phone_number):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     session['uid'] = '123456'
-    # session['username'] = 'evan123456'
+    session['username'] = 'evan123456'
+    return redirect('/user')
+
+@app.route('/logout')
+def logout():
+    # 刪除 session 的三種方式
+    session.pop('uid')
+    del session['username']
+    session.clear()
     return redirect('/user')
 
 @app.route('/user')
