@@ -1,4 +1,4 @@
-from flask import Flask, current_app, request
+from flask import Flask, current_app, request, make_response
 # redirect
 from flask import redirect, url_for
 # template
@@ -90,6 +90,26 @@ def upload_image():
 @app.route('/show/<filename>')
 def show(filename):
     return send_from_directory(app.config['UPLOAD_IMAGE_FOLDER'], filename)
+
+@app.route('/cookie/set', methods=['GET', 'POST'])
+def set_cookie():
+    resp = make_response(render_template('cookie.html'))
+    # set cookie expire time
+    # max_age > 10 seconds
+    # expires = datetime.utcnow() + timedelta(seconds=10)
+    resp.set_cookie('username', 'evan', max_age=1000)
+    return resp
+
+@app.route('/cookie/get', methods=['GET', 'POST'])
+def get_cookie():
+    username = request.cookies.get('username')
+    return f"username: {username}"
+
+@app.route('/cookie/delete', methods=['GET', 'POST'])
+def delete_cookie():
+    resp = make_response('刪除cookie')
+    resp.delete_cookie('username')
+    return resp
     
 
 if __name__ == '__main__':
