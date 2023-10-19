@@ -20,6 +20,7 @@ from converters import MyConverter
 import os, redis
 from datetime import datetime
 
+
 # 初始化 session
 f_session = Session()
 f_mysql = SQLAlchemy()
@@ -188,6 +189,56 @@ def doc():
 @app.route('/doc/<path:path>')
 def send_doc(path):
     return send_from_directory('doc', path)
+
+@app.route('/init/mysql')
+def init_mysql_data():
+    # mysql models
+    # from models.mysql_models import (
+    #     Hero,
+    #     HeroType,
+    # )
+    class HeroType(f_mysql.Model):
+        __tablename__ = 'hero_types'
+        
+        id = f_mysql.Column(f_mysql.Integer, primary_key=True)
+        name = f_mysql.Column(f_mysql.String(32), unique=True)
+        
+        # 關聯, db 不會存在此欄位, 僅用來查詢與反向查詢
+        # backref: 在關連的另一個 model 加入反向引用
+        heros = f_mysql.relationship("Hero", backref="type")
+        
+        
+    class Hero(f_mysql.Model):
+        __tablename__ = 'heros'
+        id = f_mysql.Column(f_mysql.Integer, primary_key=True)
+        name = f_mysql.Column(f_mysql.String(64), unique=True)
+        gender = f_mysql.Column(f_mysql.String(64))
+        
+        # fk, one hero_type map many heros
+        type_id = f_mysql.Column(f_mysql.Integer, f_mysql.ForeignKey('hero_types.id'))
+    
+    f_mysql.drop_all()
+    f_mysql.create_all()
+    
+    # 添加一筆
+    type1 = HeroType(name='射手')
+    f_mysql.session.add(type1)
+    f_mysql.session.commit()
+    
+    # 添加多筆
+    type2 = HeroType(name='坦克')
+    type3 = HeroType(name='法師')
+    type4 = HeroType(name='刺客')
+    f_mysql.session.add_all([type2, type3, type4])
+    f_mysql.session.commit()
+    
+    hero1 = Hero(name='后羿', gender='男', type_id=type1.id)
+    hero2 = Hero(name='程咬金', gender='男', type_id=type2.id)
+    hero3 = Hero(name='王昭君', gender='女', type_id=type3.id)
+    hero4 = Hero(name='安琪拉', gender='女', type_id=type3.id)
+    hero5 = Hero(name='蘭陵王', gender='男', type_id=type4.id)
+    f_mysql.session.add_all([hero1, hero2, hero3, hero4, hero5])
+    f_mysql.session.commit()
     
 
 if __name__ == '__main__':
