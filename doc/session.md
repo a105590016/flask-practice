@@ -4,6 +4,6 @@
 - 可自定義過期時間
     ```python
     # 表示在 2 小時後過期
-    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hour=2) 
+    app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=2) 
     ```
     
