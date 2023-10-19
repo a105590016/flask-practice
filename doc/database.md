@@ -1,6 +1,6 @@
 # Mysql
 這邊以 SQLAlchemy 做演示
-```base=
+```bash=
 pip install flask-sqlalchemy
 pip install pymysql
 ```
