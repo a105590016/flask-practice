@@ -28,6 +28,28 @@ f_mysql = SQLAlchemy()
 app = Flask('flask-practice')
 app.url_map.converters['re'] = MyConverter
 
+class HeroType(f_mysql.Model):
+    __tablename__ = 'hero_types'
+    
+    id = f_mysql.Column(f_mysql.Integer, primary_key=True)
+    name = f_mysql.Column(f_mysql.String(32), unique=True)
+    
+    # 關聯, db 不會存在此欄位, 僅用來查詢與反向查詢
+    # backref: 在關連的另一個 model 加入反向引用
+    heros = f_mysql.relationship("Hero", backref="type")
+    
+    
+class Hero(f_mysql.Model):
+    __tablename__ = 'heros'
+    id = f_mysql.Column(f_mysql.Integer, primary_key=True)
+    name = f_mysql.Column(f_mysql.String(64), unique=True)
+    gender = f_mysql.Column(f_mysql.String(64))
+    
+    # fk, one hero_type map many heros
+    type_id = f_mysql.Column(f_mysql.Integer, f_mysql.ForeignKey('hero_types.id'))
+    
+
+
 # 自定義 502 錯誤訊息
 @app.errorhandler(502)
 def handle_502_error(error):
@@ -192,31 +214,6 @@ def send_doc(path):
 
 @app.route('/init/mysql')
 def init_mysql_data():
-    # mysql models
-    # from models.mysql_models import (
-    #     Hero,
-    #     HeroType,
-    # )
-    class HeroType(f_mysql.Model):
-        __tablename__ = 'hero_types'
-        
-        id = f_mysql.Column(f_mysql.Integer, primary_key=True)
-        name = f_mysql.Column(f_mysql.String(32), unique=True)
-        
-        # 關聯, db 不會存在此欄位, 僅用來查詢與反向查詢
-        # backref: 在關連的另一個 model 加入反向引用
-        heros = f_mysql.relationship("Hero", backref="type")
-        
-        
-    class Hero(f_mysql.Model):
-        __tablename__ = 'heros'
-        id = f_mysql.Column(f_mysql.Integer, primary_key=True)
-        name = f_mysql.Column(f_mysql.String(64), unique=True)
-        gender = f_mysql.Column(f_mysql.String(64))
-        
-        # fk, one hero_type map many heros
-        type_id = f_mysql.Column(f_mysql.Integer, f_mysql.ForeignKey('hero_types.id'))
-    
     f_mysql.drop_all()
     f_mysql.create_all()
     
@@ -241,6 +238,27 @@ def init_mysql_data():
     f_mysql.session.commit()
     
 
+@app.route('/hero/<int:hero_id>')
+def hero(hero_id):
+    hero = Hero.query.filter_by(id=hero_id).first_or_404()
+    data = {
+        'id': hero.id,
+        'name': hero.name,
+        'gender': hero.gender,
+        'type': hero.type.name
+    }
+    return jsonify(data)
+
+@app.route('/type/<int:type_id>/heros')
+def get_heros_by_type(type_id):
+    hero_type = HeroType.query.filter_by(id=type_id).first_or_404()
+    data = {
+        'name': hero_type.name,
+        'heros': [ {'id': hero.id, 'name': hero.name} for hero in hero_type.heros ]
+    }
+    return jsonify(data)
+    
+    
 if __name__ == '__main__':
     # 引入 settings
     app.config.from_pyfile('./config/config.cfg')
