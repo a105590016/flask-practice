@@ -257,6 +257,26 @@ def get_heros_by_type(type_id):
         'heros': [ {'id': hero.id, 'name': hero.name} for hero in hero_type.heros ]
     }
     return jsonify(data)
+
+@app.route('/hero/<int:hero_id>/update')
+def update_hero(hero_id):
+    # update 1
+    # hero = Hero.query.get(hero_id)
+    # hero.name = '伽羅'
+    # f_mysql.session.add(hero)
+    # f_mysql.session.commit()
+    
+    # update 2
+    Hero.query.filter_by(id=hero_id).update({'name': '虞姬', 'gender': '女'})
+    f_mysql.session.commit()
+    return 'ok'
+
+@app.route('/hero/<int:hero_id>/delete')
+def delete_hero(hero_id):
+    hero = Hero.query.get(hero_id)
+    f_mysql.session.delete(hero)
+    f_mysql.session.commit()
+    return 'ok'
     
     
 if __name__ == '__main__':
