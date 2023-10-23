@@ -277,6 +277,10 @@ def delete_hero(hero_id):
     f_mysql.session.delete(hero)
     f_mysql.session.commit()
     return 'ok'
+
+@app.route('/template/<filename>')
+def get_template(filename):
+    return render_template(f"{filename}.html")
     
     
 if __name__ == '__main__':
