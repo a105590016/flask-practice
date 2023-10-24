@@ -1,5 +1,4 @@
-__pycache__/*
-models/__pycache__/*
+*.pyc
 
 uploads/images/*.jpg
 uploads/images/*.jpeg
