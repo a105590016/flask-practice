@@ -13,6 +13,14 @@ from flask_sqlalchemy import SQLAlchemy
 import pymysql
 # 從資料夾取得文件
 from flask import send_from_directory
+
+# wtf 表單
+from flask_wtf import FlaskForm
+# 表單欄位
+from wtforms import SubmitField, StringField, PasswordField
+# 表單驗證
+from wtforms.validators import DataRequired, EqualTo
+
 from werkzeug.utils import secure_filename
 # converter
 from converters import MyConverter
@@ -82,14 +90,14 @@ def phone(phone_number):
     return f"phone number: {phone_number}"
     return redirect(url_for('center_page', uid='12311'))
 
-@app.route('/login', methods=['GET', 'POST'])
-def login():
+@app.route('/session/create', methods=['GET', 'POST'])
+def session_create():
     session['uid'] = '123456'
     session['username'] = 'evan123456'
     return redirect('/user')
 
-@app.route('/logout')
-def logout():
+@app.route('/session/delete')
+def session_delete():
     # 刪除 session 的三種方式
     session.pop('uid')
     del session['username']
@@ -281,6 +289,27 @@ def delete_hero(hero_id):
 @app.route('/template/<filename>')
 def get_template(filename):
     return render_template(f"{filename}.html")
+
+
+# 自定義表單, 文字, 密碼, 提交按鈕
+class LoginForm(FlaskForm):
+    account = StringField(label='帳號: ', validators=[DataRequired('帳號不能為空')])
+    password = PasswordField(label='密碼: ', validators=[DataRequired('密碼不能為空'), EqualTo('password1', '密碼不一樣')])
+    password1 = PasswordField(label='確認密碼', validators=[DataRequired('請再次輸入密碼')])
+    submit = SubmitField('提交')
+
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    
+    if form.validate_on_submit():
+        account = form.account.data
+        password = form.password.data
+        password1 = form.password1.data
+        print(account, password, password1)
+        
+    return render_template('login.html', form=form)
     
     
 if __name__ == '__main__':

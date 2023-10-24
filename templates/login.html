@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block body %}
+
+<!-- <form method='post'>
+    <input type="text" name="username" placeholder='Username'>
+    <input type="password" name="password" placeholder='password'>
+    <input type="submit">
+</form> -->
+
+<form action="" method="post">
+    <!-- set csrf_token -->
+    {{ form.csrf_token() }}
+
+    {{ form.account.label }}
+    <p>{{ form.account }}</p>
+    {% for msg in form.account.errors %}
+        <p>{{ msg }}</p>
+    {% endfor %}
+
+    {{ form.password.label }}
+    <p>{{ form.password }}</p>
+    {% for msg in form.password.errors %}
+        <p>{{ msg }}</p>
+    {% endfor %}
+
+    {{ form.password1.label }}
+    <p>{{ form.password1 }}</p>
+    {% for msg in form.password1.errors %}
+        <p>{{ msg }}</p>
+    {% endfor %}
+
+    <p>{{ form.submit() }}</p>
+    {% for x in get_flashed_messages() %}
+        {{ x }}
+    {% endfor %}
+</form>
+
+
+
+
+{% endblock  %}
