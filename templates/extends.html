@@ -2,4 +2,19 @@
 {% block body %}
 {{ super() }}
 填充內容
+<br>
+
+{% macro macro_input() %}
+    輸入框: <input type="text"> <br>
+{% endmacro %}
+
+{% macro macro_input_with_param(tip, type, name) %}
+    {{ tip }}: <input type="{{ type }}" name="{{ name }}"> <br>
+{% endmacro %}
+
+{{ macro_input() }}
+{{ macro_input() }}
+{{ macro_input_with_param('帳號', 'text', 'email') }}
+{{ macro_input_with_param('密碼', 'password', 'pwd') }}
+
 {% endblock %}
