@@ -310,6 +310,35 @@ def login():
         print(account, password, password1)
         
     return render_template('login.html', form=form)
+
+
+@app.route('/gogo')
+def gogo():
+    print('函数执行')
+    return 'gogo page'
+
+
+# 每一次請求前執行
+@app.before_request
+def before_request():
+    print('before_request')
+
+
+# 請求後執行
+@app.after_request
+def after_request(response):
+    # response: 就是前面的请求处理完毕之后, 返回的响应数据，前提是视图函数没有出现异常
+    # 如果需要对响应做额外处理,可以再这里进行
+    # json.dumps 配置请求钩子
+    # response.headers["Content-Type"] = "application/json"
+    print('after_request')
+    return response
+
+
+# 無論程式是否出現異常，每一次請求之後都會使用，會接收一個參數，參數是錯誤訊息
+@app.teardown_request
+def teardown_request(error):
+    print('teardown_request: error %s' % error)
     
     
 if __name__ == '__main__':
