@@ -1,4 +1,4 @@
-from server import f_mysql as db
+from myapp import mysql as db
 
 class HeroType(db.Model):
     __tablename__ = 'hero_types'
